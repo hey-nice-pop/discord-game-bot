@@ -1,2 +1,8 @@
 # 個人的なdiscordサーバー用のbot
-## README.MD準備中
+## 必要
+- discord.py
+- openai(0.28)
+```bash
+pip install openai==0.28
+```
+
