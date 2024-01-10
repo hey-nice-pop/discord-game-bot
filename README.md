@@ -1,2 +1,2 @@
 # 個人的なdiscordサーバー用のbot
-## READ.MD準備中
+## README.MD準備中
