@@ -5,4 +5,9 @@
 ```bash
 pip install openai==0.28
 ```
-
+- .env
+```.env
+BOT_TOKEN = 'YOURTOKEN'
+RESPONSE_CHANNEL_ID = 123456789 # YOURCHANNEL
+OPENAI_API_KEY = 'YOURKEY'
+```
