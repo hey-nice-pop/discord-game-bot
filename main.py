@@ -22,7 +22,7 @@ bot = commands.Bot(
     command_prefix='/', 
     intents=intents, 
     sync_commands=True,
-    activity=discord.Game("外気浴")
+    activity=discord.Game("水風呂")
 )
 
 @bot.event
