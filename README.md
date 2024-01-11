@@ -5,6 +5,7 @@
 ```bash
 pip install openai==0.28
 ```
+- python-dotenv
 - .env
 ```.env
 BOT_TOKEN = 'YOURTOKEN'
