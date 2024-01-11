@@ -16,7 +16,7 @@ OPENAI_API_KEY = 'YOURKEY'
 RESPONSE_CHANNEL_ID = 123456789 # YOURCHANNEL
 ```
 ## 機能
-スラッシュコマンド(/)に対応
+スラッシュコマンド( / )に対応
 - マインスイーパー
 - オセロ
 - ブラックジャック
