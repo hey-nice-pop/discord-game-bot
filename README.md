@@ -6,11 +6,14 @@
 pip install openai==0.28
 ```
 - python-dotenv
+```bash
+pip install python-dotenv
+```
 - .env
 ```.env
 BOT_TOKEN = 'YOURTOKEN'
-RESPONSE_CHANNEL_ID = 123456789 # YOURCHANNEL
 OPENAI_API_KEY = 'YOURKEY'
+RESPONSE_CHANNEL_ID = 123456789 # YOURCHANNEL
 ```
 ## 機能
 スラッシュコマンド(/)に対応
