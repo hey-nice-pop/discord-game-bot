@@ -1,4 +1,4 @@
-# 個人的なdiscordサーバー用のbot
+# コミュニティサーバー向け discord bot
 ## 必要
 - discord.py
 - openai(0.28)
