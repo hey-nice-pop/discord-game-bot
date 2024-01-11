@@ -13,10 +13,8 @@ RESPONSE_CHANNEL_ID = 123456789 # YOURCHANNEL
 OPENAI_API_KEY = 'YOURKEY'
 ```
 ## 機能
+スラッシュコマンド(/)に対応
 - マインスイーパー
-  /minesweeper
 - オセロ
-  /othello_start,/othello_place ...
 - ブラックジャック
-  /bj_start,/bj_hit ...
 - chatGPT
