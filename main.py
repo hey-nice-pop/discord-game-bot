@@ -42,25 +42,20 @@ minesweeper.setup(bot)
 # ブラックジャック機能のセットアップ
 bj.setup(bot)
 
-@bot.event
-async def on_ready():
-    print(f'{bot.user.name}がログインしました')
-
 # chatGPT機能
 @bot.event
 async def on_message(message):
-    print(message.content)
-    if message.author == bot.user:
-        print("Bot自身のメッセージを無視します。")
+    if message.author == bot.user or message.channel.id != RESPONSE_CHANNEL_ID:
         return
 
-    if message.channel.id != RESPONSE_CHANNEL_ID:
-        print(f"指定されたチャンネル以外でのメッセージです: {message.channel.id}")
-        return
+    # チャンネルの履歴を取得(10件)
+    history = [msg async for msg in message.channel.history(limit=10)]
 
-    print(f"メッセージを受信しました: {message.content}")
-    response = await chatgpt.generate_response(message.content)
-    print(f"生成された応答: {response}")
+    # 履歴をAPIに渡す形式に変換
+    history_messages = [{"role": "user" if msg.author != bot.user else "assistant", "content": msg.content} for msg in history[::-1]]
+
+    # 応答の生成
+    response = await chatgpt.generate_response(history_messages)
 
     await message.channel.send(response)
     await bot.process_commands(message)
