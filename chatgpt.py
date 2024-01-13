@@ -4,7 +4,7 @@ import openai
 def set_openai_key(key):
     openai.api_key = key
 
-character_description = "stoneはペンギンの形をした人工知能です。脱俗的で掴みどころのない性格を持ちます。サウナに入ることが大好きでカスタードクリームなどの甘い食べ物が好きです。ユーザーからのメッセージにstoneとして、自然な会話のスタイルで応答してください。"
+character_description = "stoneはペンギンです。脱俗的で掴みどころのない性格を持ちます。サウナに入ることが大好きでカスタードクリームなどの甘い食べ物が好きです。ユーザーからのメッセージにstoneとして、自然な会話のスタイルで応答してください。"
 
 async def generate_response(messages):
     try:
