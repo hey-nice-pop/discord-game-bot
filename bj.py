@@ -160,6 +160,17 @@ class BlackjackBot:
 
         self.end_game(channel_id)  # ゲームを終了します。
         return response, False
+    
+    def command_bj_show(self, channel_id, user_id):
+        game = self.get_game(channel_id)
+        # ユーザーがゲームに参加しているかを確認します。
+        if user_id not in game.users:
+            return f"{user_id}はゲームに参加していません。", True
+
+        hand = game.users[user_id]['hand']
+        score = game.users[user_id]['score']
+        return f"{user_id}の現在の手札: {self.hand_to_string(hand)} スコア: {score}", False
+
 
 def setup(bot):
     blackjack_bot = BlackjackBot(bot)
@@ -181,3 +192,10 @@ def setup(bot):
         channel_id = interaction.channel_id
         response, ephemeral = blackjack_bot.command_bj_allstand(channel_id)
         await interaction.response.send_message(response, ephemeral=ephemeral)
+
+    @bot.tree.command(name='bj_show', description='現在の手札を表示します')
+    async def show(interaction: discord.Interaction):
+        channel_id = interaction.channel_id
+        response, ephemeral = blackjack_bot.command_bj_show(channel_id, interaction.user.name)
+        await interaction.response.send_message(response, ephemeral=ephemeral)
+

@@ -110,13 +110,6 @@ async def place_piece(interaction: discord.Interaction, col: str, row: str):
         await interaction.followup.send('無効な移動です。', ephemeral=True)
         return
 
-    if game.last_message_id:
-        try:
-            old_message = await interaction.channel.fetch_message(game.last_message_id)
-            await old_message.delete()
-        except Exception as e:
-            print(f"Failed to delete the old message: {e}")
-
     game.board[row_index][col_index] = game.current_player
     game.flip_pieces(row_index, col_index)
     game.switch_player()
@@ -139,14 +132,6 @@ async def pass_turn(interaction: discord.Interaction):
 
     game = games[channel_id]
 
-    # 古い盤面のメッセージを削除
-    if game.last_message_id:
-        try:
-            old_message = await interaction.channel.fetch_message(game.last_message_id)
-            await old_message.delete()
-        except Exception as e:
-            print(f"Failed to delete the old message: {e}")
-
     # 手番を次のプレイヤーに渡す
     game.switch_player()
 
@@ -164,3 +149,12 @@ async def end_game(interaction: discord.Interaction):
         await interaction.response.send_message('ゲームを強制終了しました。')
     else:
         await interaction.response.send_message('アクティブなゲームが見つかりません。')
+
+async def show_board(interaction: discord.Interaction):
+    channel_id = interaction.channel_id
+    if channel_id not in games:
+        await interaction.response.send_message('このチャンネルでゲームが開始されていません。', ephemeral=True)
+        return
+
+    game = games[channel_id]
+    await interaction.response.send_message(render_board(game.board, game))
