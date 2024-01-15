@@ -74,87 +74,93 @@ def render_board(board, game):
         result += '\n'
     return result
 
-async def start_game(interaction: discord.Interaction):
-    channel_id = interaction.channel_id
-    if channel_id in games:
-        await interaction.response.send_message('このチャンネルで既にゲームが進行中です。', ephemeral=True)
-        return
+def setup(bot):
+    @bot.tree.command(name='othello_start', description='新しいオセロを始めます')
+    async def start_game(interaction: discord.Interaction):
+        channel_id = interaction.channel_id
+        if channel_id in games:
+            await interaction.response.send_message('このチャンネルで既にゲームが進行中です。', ephemeral=True)
+            return
 
-    await interaction.response.defer()  # 応答を保留にする
-    game = OthelloGame()
-    message = await interaction.followup.send('新しいゲームを開始しました。\n' + render_board(game.board, game))  # メッセージを送信し、戻り値を取得
-    game.last_message_id = message.id  # 初期盤面メッセージのIDを記録
-    games[channel_id] = game
+        await interaction.response.defer()  # 応答を保留にする
+        game = OthelloGame()
+        message = await interaction.followup.send('新しいゲームを開始しました。\n' + render_board(game.board, game))  # メッセージを送信し、戻り値を取得
+        game.last_message_id = message.id  # 初期盤面メッセージのIDを記録
+        games[channel_id] = game
 
-async def place_piece(interaction: discord.Interaction, col: str, row: str):
-    channel_id = interaction.channel_id
-    if channel_id not in games:
-        await interaction.response.defer(ephemeral=True)  # 応答を保留にし、ephemeralをTrueに設定
-        await interaction.followup.send('このチャンネルでゲームが開始されていません。', ephemeral=True)
-        return
+    @bot.tree.command(name='othello_place', description='指定した位置にコマを置きます')
+    async def place_piece(interaction: discord.Interaction, col: str, row: str):
+        channel_id = interaction.channel_id
+        if channel_id not in games:
+            await interaction.response.defer(ephemeral=True)  # 応答を保留にし、ephemeralをTrueに設定
+            await interaction.followup.send('このチャンネルでゲームが開始されていません。', ephemeral=True)
+            return
 
-    game = games[channel_id]
+        game = games[channel_id]
 
-    col = col.lower()
-    row = row.lower()
-    if len(col) != 1 or len(row) != 1 or col < 'a' or col > 'f' or row < 'a' or row > 'f':
-        await interaction.response.defer(ephemeral=True)  # 応答を保留にし、ephemeralをTrueに設定
-        await interaction.followup.send('無効な列または行です。列と行はa-fの一文字で指定してください。', ephemeral=True)
-        return
+        col = col.lower()
+        row = row.lower()
+        if len(col) != 1 or len(row) != 1 or col < 'a' or col > 'f' or row < 'a' or row > 'f':
+            await interaction.response.defer(ephemeral=True)  # 応答を保留にし、ephemeralをTrueに設定
+            await interaction.followup.send('無効な列または行です。列と行はa-fの一文字で指定してください。', ephemeral=True)
+            return
 
-    col_index = ord(col) - ord('a')
-    row_index = ord(row) - ord('a')
+        col_index = ord(col) - ord('a')
+        row_index = ord(row) - ord('a')
 
-    if not game.is_valid_move(row_index, col_index):
-        await interaction.response.defer(ephemeral=True)  # 応答を保留にし、ephemeralをTrueに設定
-        await interaction.followup.send('無効な移動です。', ephemeral=True)
-        return
+        if not game.is_valid_move(row_index, col_index):
+            await interaction.response.defer(ephemeral=True)  # 応答を保留にし、ephemeralをTrueに設定
+            await interaction.followup.send('無効な移動です。', ephemeral=True)
+            return
 
-    game.board[row_index][col_index] = game.current_player
-    game.flip_pieces(row_index, col_index)
-    game.switch_player()
+        game.board[row_index][col_index] = game.current_player
+        game.flip_pieces(row_index, col_index)
+        game.switch_player()
 
-    # 盤面を全員に表示する通常のメッセージとして送信
-    await interaction.response.defer(ephemeral=False)  # 応答を保留にし、ephemeralをFalseに設定
-    new_message = await interaction.followup.send(render_board(game.board, game))
-    game.last_message_id = new_message.id
+        # 盤面を全員に表示する通常のメッセージとして送信
+        await interaction.response.defer(ephemeral=False)  # 応答を保留にし、ephemeralをFalseに設定
+        new_message = await interaction.followup.send(render_board(game.board, game))
+        game.last_message_id = new_message.id
 
-    if game.is_game_over():
-        winner = ':black_circle:' if game.count_pieces(':black_circle:') > game.count_pieces(':white_circle:') else ':white_circle:'
-        await interaction.channel.send(f'ゲーム終了！ 勝者: {winner}')
-        del games[channel_id]
+        if game.is_game_over():
+            winner = ':black_circle:' if game.count_pieces(':black_circle:') > game.count_pieces(':white_circle:') else ':white_circle:'
+            await interaction.channel.send(f'ゲーム終了！ 勝者: {winner}')
+            del games[channel_id]
 
-async def pass_turn(interaction: discord.Interaction):
-    channel_id = interaction.channel_id
-    if channel_id not in games:
-        await interaction.response.send_message('このチャンネルでゲームが開始されていません。', ephemeral=True)
-        return
+    @bot.tree.command(name='othello_pass', description='手番をパスします')
+    async def pass_turn(interaction: discord.Interaction):
+        channel_id = interaction.channel_id
+        if channel_id not in games:
+            await interaction.response.send_message('このチャンネルでゲームが開始されていません。', ephemeral=True)
+            return
 
-    game = games[channel_id]
+        game = games[channel_id]
 
-    # 手番を次のプレイヤーに渡す
-    game.switch_player()
+        # 手番を次のプレイヤーに渡す
+        game.switch_player()
 
-    # 応答の保留を解除
-    await interaction.response.defer()
+        # 応答の保留を解除
+        await interaction.response.defer()
 
-    # 盤面を全員に表示する通常のメッセージとして送信
-    new_message = await interaction.followup.send(render_board(game.board, game))
-    game.last_message_id = new_message.id
+        # 盤面を全員に表示する通常のメッセージとして送信
+        new_message = await interaction.followup.send(render_board(game.board, game))
+        game.last_message_id = new_message.id
 
-async def end_game(interaction: discord.Interaction):
-    channel_id = interaction.channel_id
-    if channel_id in games:
-        del games[channel_id]
-        await interaction.response.send_message('ゲームを強制終了しました。')
-    else:
-        await interaction.response.send_message('アクティブなゲームが見つかりません。')
+    @bot.tree.command(name='othello_end', description='オセロを強制終了します')
+    async def end_game(interaction: discord.Interaction):
+        channel_id = interaction.channel_id
+        if channel_id in games:
+            del games[channel_id]
+            await interaction.response.send_message('ゲームを強制終了しました。')
+        else:
+            await interaction.response.send_message('アクティブなゲームが見つかりません。')
 
-async def show_board(interaction: discord.Interaction):
-    channel_id = interaction.channel_id
-    if channel_id not in games:
-        await interaction.response.send_message('このチャンネルでゲームが開始されていません。', ephemeral=True)
-        return
+    @bot.tree.command(name='othello_show', description='現在のオセロの盤面を表示します')
+    async def show_board(interaction: discord.Interaction):
+        channel_id = interaction.channel_id
+        if channel_id not in games:
+            await interaction.response.send_message('このチャンネルでゲームが開始されていません。', ephemeral=True)
+            return
 
-    game = games[channel_id]
-    await interaction.response.send_message(render_board(game.board, game))
+        game = games[channel_id]
+        await interaction.response.send_message(render_board(game.board, game))

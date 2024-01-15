@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import config
 
-from othello import OthelloGame, start_game, place_piece, pass_turn, end_game, show_board  # othello.pyからクラスと関数をインポート
+import othello
 import bj # BlackjackBotモジュールをインポート
 import minesweeper
 import chatgpt
@@ -31,11 +31,7 @@ async def on_ready():
     print(f'ログイン完了: {bot.user}')
 
 # コマンドをothello.pyから読み込む
-bot.tree.command(name='othello_start', description='新しいオセロを始めます')(start_game)
-bot.tree.command(name='othello_place', description='指定した位置にコマを置きます')(place_piece)
-bot.tree.command(name='othello_pass', description='手番をパスします')(pass_turn)
-bot.tree.command(name='othello_end', description='オセロを強制終了します')(end_game)
-bot.tree.command(name='othello_show', description='現在のオセロの盤面を表示します')(show_board)
+othello.setup(bot)
 
 # マインスイーパー機能のセットアップ
 minesweeper.setup(bot)
