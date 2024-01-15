@@ -3,7 +3,7 @@ from discord.ext import commands
 import config
 
 import othello
-import bj # BlackjackBotモジュールをインポート
+import bj
 import minesweeper
 import chatgpt
 
