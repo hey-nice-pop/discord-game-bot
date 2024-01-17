@@ -7,9 +7,7 @@ import bj # BlackjackBotモジュールをインポート
 import minesweeper
 import chatgpt
 
-import json
-import datetime
-from temperature import update_temperature, reset_daily_message_count, calculate_temperature_increase, check_and_reward_temperature, TEMPERATURE_FILE
+from temperature import process_message
 
 YOUR_BOT_TOKEN = config.BOT_TOKEN
 
@@ -34,16 +32,15 @@ bot = commands.Bot(
 async def on_ready():
     await bot.tree.sync()
     print(f'ログイン完了: {bot.user}')
-"""
+
 # コマンドをothello.pyから読み込む
-othello.setup(bot)
+#othello.setup(bot)
 
 # マインスイーパー機能のセットアップ
-minesweeper.setup(bot)
+#minesweeper.setup(bot)
 
 # ブラックジャック機能のセットアップ
-bj.setup(bot)
-"""
+#bj.setup(bot)
 
 #chatGPT
 async def handle_chatgpt_response(message):
@@ -56,24 +53,6 @@ async def handle_chatgpt_response(message):
         response = await chatgpt.generate_response(history_messages)
         await message.channel.send(response)
 
-#温度上昇の定義
-async def handle_temperature_update(message):
-    if message.channel.category_id != IGNORED_CATEGORY_ID:
-        with open(TEMPERATURE_FILE, 'r') as file:
-            data = json.load(file)
-
-        if data['lastResetDate'] != str(datetime.date.today()):
-            await reset_daily_message_count()
-
-        data['currentDayMessageCount'] += 1
-        increase_amount = calculate_temperature_increase(data)
-
-        await update_temperature(message.channel, increase_amount)
-        await check_and_reward_temperature(message.channel, data)
-
-        with open(TEMPERATURE_FILE, 'w') as file:
-            json.dump(data, file)
-
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -82,7 +61,8 @@ async def on_message(message):
     #await handle_chatgpt_response(message)
 
     # 温度更新処理を実行
-    await handle_temperature_update(message)
+    if message.channel.category_id != IGNORED_CATEGORY_ID:  # YOUR_CATEGORY_IDには特定のカテゴリIDを設定
+        await process_message(message)
 
     # 他のコマンドも処理
     await bot.process_commands(message)

@@ -9,6 +9,10 @@ pip install openai==0.28
 ```bash
 pip install python-dotenv
 ```
+- filelock
+```bash
+pip install filelock
+```
 - .env
 ```.env
 BOT_TOKEN = 'YOURTOKEN'
