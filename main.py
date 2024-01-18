@@ -5,17 +5,16 @@ import config
 import othello
 import bj # BlackjackBotモジュールをインポート
 import minesweeper
-import chatgpt
+from chatgpt import set_openai_key, handle_chatgpt_response
 
 from temperature import process_message
 
 YOUR_BOT_TOKEN = config.BOT_TOKEN
 
-RESPONSE_CHANNEL_ID = config.RESPONSE_CHANNEL_ID #chatGPTを動作させるチャンネルID
 IGNORED_CATEGORY_ID = 123456789012345678  # 温度上昇を無視するカテゴリのID
 
 OPENAI_API_KEY = config.OPENAI_API_KEY
-chatgpt.set_openai_key(OPENAI_API_KEY)
+set_openai_key(OPENAI_API_KEY)
 
 # インテントを有効化
 intents = discord.Intents.all()
@@ -42,23 +41,12 @@ async def on_ready():
 # ブラックジャック機能のセットアップ
 #bj.setup(bot)
 
-#chatGPT
-async def handle_chatgpt_response(message):
-    if message.channel.id == RESPONSE_CHANNEL_ID:
-        # チャンネルの履歴を取得(10件)
-        history = [msg async for msg in message.channel.history(limit=10)]
-        # 履歴をAPIに渡す形式に変換
-        history_messages = [{"role": "user" if msg.author != bot.user else "assistant", "content": msg.content} for msg in history[::-1]]
-        # 応答の生成
-        response = await chatgpt.generate_response(history_messages)
-        await message.channel.send(response)
-
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
     # ChatGPT応答処理を実行
-    #await handle_chatgpt_response(message)
+    await handle_chatgpt_response(bot, message)
 
     # 温度更新処理を実行
     if message.channel.category_id != IGNORED_CATEGORY_ID:  # YOUR_CATEGORY_IDには特定のカテゴリIDを設定
