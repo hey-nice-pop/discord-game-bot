@@ -26,3 +26,4 @@ RESPONSE_CHANNEL_ID = 123456789 # YOURCHANNEL
 - ブラックジャック
 ### 指定したチャンネルで応答
 - chatGPT
+- コミュニティメッセージで上昇する温度計とリワード🌡️
