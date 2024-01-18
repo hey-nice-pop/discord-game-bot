@@ -4,6 +4,8 @@ from discord import Message
 from filelock import FileLock, Timeout
 import config
 
+from reward import send_90_degree_reward
+
 # 温度を送信するチャンネル
 TARGET_THREAD_CHANNEL_ID = config.TARGET_THREAD_CHANNEL_ID
 
@@ -72,7 +74,8 @@ async def handle_90_degree_threshold(data: dict, message: Message):
 
     # 90度に達した場合の特別なメッセージの処理
     if 'last_reward_date' not in data or data['last_reward_date'] != str(datetime.date.today()):
-        await target_thread.send('90度に達しました！特別なメッセージです！')
+        #await target_thread.send('90度に達しました！特別なメッセージです！')
+        await send_90_degree_reward(TARGET_THREAD_CHANNEL_ID, message.guild, datetime.date.today() - datetime.timedelta(days=1))
         data['last_reward_date'] = str(datetime.date.today())
     else:
         await target_thread.send('90度を超えましたが、本日のリワードは受取済みです。')

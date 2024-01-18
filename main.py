@@ -46,10 +46,10 @@ async def on_message(message):
     if message.author == bot.user:
         return
     # ChatGPT応答処理を実行
-    await handle_chatgpt_response(bot, message)
+    #await handle_chatgpt_response(bot, message)
 
     # 温度更新処理を実行
-    if message.channel.category_id != IGNORED_CATEGORY_ID:  # YOUR_CATEGORY_IDには特定のカテゴリIDを設定
+    if message.channel.category_id != IGNORED_CATEGORY_ID:
         await process_message(message)
 
     # 他のコマンドも処理
