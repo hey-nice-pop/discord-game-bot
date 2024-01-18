@@ -2,9 +2,10 @@ import json
 import datetime
 from discord import Message
 from filelock import FileLock, Timeout
+import config
 
 # 温度を送信するチャンネル
-TARGET_THREAD_CHANNEL_ID = 1184679498222932049
+TARGET_THREAD_CHANNEL_ID = config.TARGET_THREAD_CHANNEL_ID
 
 # JSONファイルのパス
 JSON_FILE_PATH = 'temperature.json'

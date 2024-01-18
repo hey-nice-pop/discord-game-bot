@@ -11,7 +11,7 @@ from temperature import process_message
 
 YOUR_BOT_TOKEN = config.BOT_TOKEN
 
-IGNORED_CATEGORY_ID = 123456789012345678  # 温度上昇を無視するカテゴリのID
+IGNORED_CATEGORY_ID = config.IGNORED_CATEGORY_ID  # 温度上昇を無視するカテゴリのID
 
 OPENAI_API_KEY = config.OPENAI_API_KEY
 set_openai_key(OPENAI_API_KEY)
