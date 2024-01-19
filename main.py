@@ -2,17 +2,16 @@ import discord
 from discord.ext import commands
 import config
 
-import othello
-import bj
-import minesweeper
-from chatgpt import set_openai_key, handle_chatgpt_response
+import game.othello as othello
+import game.bj as bj
+import game.minesweeper as minesweeper
 
-from temperature import process_message
+from chatgptModule.chatgpt import set_openai_key, handle_chatgpt_response
+
+from temperatureModule.temperature import process_message
 
 YOUR_BOT_TOKEN = config.BOT_TOKEN
-
 IGNORED_CATEGORY_ID = config.IGNORED_CATEGORY_ID  # 温度上昇を無視するカテゴリのID
-
 OPENAI_API_KEY = config.OPENAI_API_KEY
 set_openai_key(OPENAI_API_KEY)
 
@@ -34,10 +33,8 @@ async def on_ready():
 
 # コマンドをothello.pyから読み込む
 othello.setup(bot)
-
 # マインスイーパー機能のセットアップ
 minesweeper.setup(bot)
-
 # ブラックジャック機能のセットアップ
 bj.setup(bot)
 
