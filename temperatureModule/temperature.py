@@ -79,7 +79,7 @@ async def handle_90_degree_threshold(data: dict, message: Message):
         await send_90_degree_reward(TARGET_THREAD_CHANNEL_ID, message.guild, datetime.date.today() - datetime.timedelta(days=1))
         data['last_reward_date'] = str(datetime.date.today())
     else:
-        await target_thread.send('------------------------\n現在のサウナ室温度：🌡️ 90℃\n| 🟧 🟧 🟧 🟧 |\n※90度を超えましたが、本日のリワードは受取済みです。')
+        await target_thread.send('------------------------\n現在のサウナ室温度：🌡️ 90℃\n| 🟧 🟧 🟧 🟧 |\n※90℃を超えましたが、本日の拾い物は受取済みです。')
     
     reset_temperature(data)
     await target_thread.send('------------------------\n温度がリセットされました\n現在のサウナ室温度：🌡️ 60℃\n| 🟧 ⬜ ⬜ ⬜ |')
