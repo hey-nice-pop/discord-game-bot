@@ -30,17 +30,17 @@ bot = commands.Bot(
 async def on_ready():
     await bot.tree.sync()
     print(f'ログイン完了: {bot.user}')
-
+"""
 # コマンドをothello.pyから読み込む
 othello.setup(bot)
 # マインスイーパー機能のセットアップ
 minesweeper.setup(bot)
 # ブラックジャック機能のセットアップ
 bj.setup(bot)
-
+"""
 @bot.event
 async def on_message(message):
-    if message.author == bot.user:
+    if message.author.bot:
         return
     # ChatGPT応答処理を実行
     await handle_chatgpt_response(bot, message)
