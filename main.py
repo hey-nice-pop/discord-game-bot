@@ -2,17 +2,18 @@ import discord
 from discord.ext import commands
 import config
 
-import othello
-import bj
-import minesweeper
-import chatgpt
+import game.othello as othello
+import game.bj as bj
+import game.minesweeper as minesweeper
+
+from chatgptModule.chatgpt import set_openai_key, handle_chatgpt_response
+
+from temperatureModule.temperature import process_message
 
 YOUR_BOT_TOKEN = config.BOT_TOKEN
-
-RESPONSE_CHANNEL_ID = config.RESPONSE_CHANNEL_ID
-
+IGNORED_CATEGORY_ID = config.IGNORED_CATEGORY_ID  # 温度上昇を無視するカテゴリのID
 OPENAI_API_KEY = config.OPENAI_API_KEY
-chatgpt.set_openai_key(OPENAI_API_KEY)
+set_openai_key(OPENAI_API_KEY)
 
 # インテントを有効化
 intents = discord.Intents.all()
@@ -32,29 +33,23 @@ async def on_ready():
 
 # コマンドをothello.pyから読み込む
 othello.setup(bot)
-
 # マインスイーパー機能のセットアップ
 minesweeper.setup(bot)
-
 # ブラックジャック機能のセットアップ
 bj.setup(bot)
 
-# chatGPT機能
 @bot.event
 async def on_message(message):
-    if message.author == bot.user or message.channel.id != RESPONSE_CHANNEL_ID:
+    if message.author == bot.user:
         return
+    # ChatGPT応答処理を実行
+    await handle_chatgpt_response(bot, message)
 
-    # チャンネルの履歴を取得(10件)
-    history = [msg async for msg in message.channel.history(limit=10)]
+    # 温度更新処理を実行
+    if message.channel.category_id != IGNORED_CATEGORY_ID:
+        await process_message(message)
 
-    # 履歴をAPIに渡す形式に変換
-    history_messages = [{"role": "user" if msg.author != bot.user else "assistant", "content": msg.content} for msg in history[::-1]]
-
-    # 応答の生成
-    response = await chatgpt.generate_response(history_messages)
-
-    await message.channel.send(response)
+    # 他のコマンドも処理
     await bot.process_commands(message)
 
 # Discordボットを起動
