@@ -2,34 +2,36 @@ import datetime
 import discord
 import requests
 import random
+import config
 
 # YouTube Data APIのエンドポイントとAPIキー
 YOUTUBE_SEARCH_API_URL = "https://www.googleapis.com/youtube/v3/search"
-API_KEY = "AIzaSyBJyTHzc0HHXKx3AOqqT0XaAWojHraPliA"  # APIキーを設定
+YOUTUBE_KEY = config.YOUTUBE_KEY  # APIキーを設定
 
-async def search_youtube_videos(query, max_results=50):
+def generate_random_keyword():
+    # "DSC"または"IMG"にランダムな4桁の数字を追加
+    prefix = random.choice(["DSC", "IMG"])
+    random_number = f"{random.randint(0, 9999):04d}"  # 4桁の数字を生成
+    return prefix + random_number
+
+async def get_random_youtube_video_url():
+    query = generate_random_keyword()
     params = {
         'part': 'snippet',
         'q': query,
         'type': 'video',
-        'maxResults': max_results,
-        'key': API_KEY
+        'maxResults': 50,
+        'key': YOUTUBE_KEY
     }
     response = requests.get(YOUTUBE_SEARCH_API_URL, params=params)
-    response.raise_for_status()
-    return response.json()
+    if response.status_code != 200:
+        print(f"APIエラー: {response.status_code}")
+        print(response.text)
+        return None
+    videos = response.json().get('items', [])
 
-async def get_random_youtube_video_url():
-    keywords = ["DSC", "IMG"]
-    query = random.choice(keywords)
-    videos_data = await search_youtube_videos(query)
-
-    # 再生回数が0の動画を抽出 (APIから直接取得する方法はないため、再生回数は別途確認が必要)
-    # この部分はAPIの制限により実際には実行できないかもしれません
-    zero_view_videos = [video for video in videos_data['items'] if video['snippet']['liveBroadcastContent'] == 'none']
-
-    if zero_view_videos:
-        selected_video = random.choice(zero_view_videos)
+    if videos:
+        selected_video = random.choice(videos)
         video_id = selected_video['id']['videoId']
         return f"https://www.youtube.com/watch?v={video_id}"
 
@@ -66,6 +68,6 @@ async def send_90_degree_reward(channel_id: int, guild: discord.Guild, date):
     most_reacted_post = await get_most_reacted_post(guild, date)
     if most_reacted_post:
         post_url = most_reacted_post.jump_url
-        await channel.send(f'90度に達しました！特別なリワードです！ 前日の最もリアクションが多かった投稿: {post_url}\n{youtube_video_url}')
+        await channel.send(f'------------------------\n@here\n現在のサウナ室温度：🌡️ 90℃\n| 🟧 🟧 🟧 🟧 |\n\nstoneがととのいました\n### 最近のHOTな投稿\n- {post_url}\n### stoneの拾い物\n- {youtube_video_url}')
     else:
-        await channel.send('90度に達しましたが、前日の投稿は見つかりませんでした。')
+        await channel.send('------------------------\n現在のサウナ室温度：🌡️ 90℃\n| 🟧 🟧 🟧 🟧 |\n※90度に達しましたが、前日の投稿は見つかりませんでした。')

@@ -3,7 +3,7 @@ from discord.ext import commands
 import config
 
 import othello
-import bj # BlackjackBotモジュールをインポート
+import bj
 import minesweeper
 from chatgpt import set_openai_key, handle_chatgpt_response
 
@@ -33,20 +33,20 @@ async def on_ready():
     print(f'ログイン完了: {bot.user}')
 
 # コマンドをothello.pyから読み込む
-#othello.setup(bot)
+othello.setup(bot)
 
 # マインスイーパー機能のセットアップ
-#minesweeper.setup(bot)
+minesweeper.setup(bot)
 
 # ブラックジャック機能のセットアップ
-#bj.setup(bot)
+bj.setup(bot)
 
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
     # ChatGPT応答処理を実行
-    #await handle_chatgpt_response(bot, message)
+    await handle_chatgpt_response(bot, message)
 
     # 温度更新処理を実行
     if message.channel.category_id != IGNORED_CATEGORY_ID:

@@ -20,6 +20,7 @@ OPENAI_API_KEY = 'YOURKEY' #openaikey
 RESPONSE_CHANNEL_ID = 123456789 # chatgptを応答させるチャンネル
 IGNORED_CATEGORY_ID = 123456789 # 温度上昇を無視するチャンネル
 TARGET_THREAD_CHANNEL_ID = 123456789 # 温度上昇を通知するチャンネル
+YOUTUBE_KEY = 'YOUTUBEAPIKEY' # youtubekey
 ```
 ## 機能
 ### スラッシュコマンド( / )に対応
