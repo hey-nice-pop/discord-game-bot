@@ -4,7 +4,7 @@ from discord import Message
 from filelock import FileLock, Timeout
 import config
 
-from reward import send_90_degree_reward
+from temperatureModule.reward import send_90_degree_reward
 
 # 温度を送信するチャンネル
 TARGET_THREAD_CHANNEL_ID = config.TARGET_THREAD_CHANNEL_ID
