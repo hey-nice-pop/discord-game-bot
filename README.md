@@ -1,4 +1,4 @@
-# コミュニティサーバー向け discord bot
+# コミュニティサーバー向け サウナからインスピレーションを得たDiscord bot
 ## 必要
 - discord.py
 - openai(0.28)
