@@ -63,9 +63,9 @@ async def check_temperature_thresholds(message: Message, data: dict, previous_te
     for threshold in thresholds:
         if previous_temperature < threshold <= data['temperature']:
             if threshold == 70:
-                await message.channel.send(f'------------------------\n現在のサウナ室温度：🌡️ {threshold}℃\n| 🟧 🟧 ⬜ ⬜ |')
+                await target_thread.send(f'------------------------\n現在のサウナ室温度：🌡️ {threshold}℃\n| 🟧 🟧 ⬜ ⬜ |')
             elif threshold == 80:
-                await message.channel.send(f'------------------------\n現在のサウナ室温度：🌡️ {threshold}℃\n| 🟧 🟧 🟧 ⬜ |')
+                await target_thread.send(f'------------------------\n現在のサウナ室温度：🌡️ {threshold}℃\n| 🟧 🟧 🟧 ⬜ |')
             elif threshold == 90:
                 # 90度に達した場合、特別な処理を行う
                 await handle_90_degree_threshold(data, message)
