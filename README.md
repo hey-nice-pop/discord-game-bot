@@ -1,4 +1,5 @@
-# コミュニティサーバー向け サウナからインスピレーションを得たDiscord bot
+# Discord bot (stone)
+サウナから着想を得たDiscord bot
 ## 必要
 - discord.py
 - openai(0.28)
@@ -29,4 +30,4 @@ YOUTUBE_KEY = 'YOUTUBEAPIKEY' # youtubekey
 - ブラックジャック
 ### 指定したチャンネルで応答
 - chatGPT
-- コミュニティメッセージで上昇する温度計とリワード🌡️
+- 投稿数に応じて上昇する温度計と90度で配布されるリワード🌡️
