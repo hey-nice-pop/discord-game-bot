@@ -1,6 +1,5 @@
 import discord
 import random
-from discord.ext import commands
 
 def generate_minesweeper_board(width, height, num_mines):
     # 初期盤面の生成
