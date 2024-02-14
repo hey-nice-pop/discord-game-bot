@@ -1,5 +1,6 @@
 import json
 import datetime
+import discord
 from discord import Message
 from filelock import FileLock, Timeout
 import config
@@ -78,11 +79,12 @@ async def handle_90_degree_threshold(data: dict, message: Message):
     if 'last_reward_date' not in data or data['last_reward_date'] != str(datetime.date.today()):
         await send_90_degree_reward(TARGET_THREAD_CHANNEL_ID, message.guild, datetime.date.today() - datetime.timedelta(days=1))
         data['last_reward_date'] = str(datetime.date.today())
-    else:
-        await target_thread.send('------------------------\n現在のサウナ室温度：🌡️ 90℃\n| 🟧 🟧 🟧 🟧 |\n※90℃を超えましたが、本日の拾い物は受取済みです。')
+    # 以下、90度に達した際に60度にリセットする
+    #else:
+    #    await target_thread.send('------------------------\n現在のサウナ室温度：🌡️ 90℃\n| 🟧 🟧 🟧 🟧 |\n※90℃を超えましたが、本日の拾い物は受取済みです。')
     
-    reset_temperature(data)
-    await target_thread.send('------------------------\n温度がリセットされました\n現在のサウナ室温度：🌡️ 60℃\n| 🟧 ⬜ ⬜ ⬜ |')
+    #reset_temperature(data)
+    #await target_thread.send('------------------------\n温度がリセットされました\n現在のサウナ室温度：🌡️ 60℃\n| 🟧 ⬜ ⬜ ⬜ |')
 
 def reset_temperature(data: dict):
     data['temperature'] = 60
@@ -104,3 +106,17 @@ def load_json():
 def save_json(data):
     with open(JSON_FILE_PATH, 'w') as file:
         json.dump(data, file, indent=4)
+
+#温度表示コマンド
+async def send_current_temperature(interaction: discord.Interaction):
+    # JSONファイルから現在の温度を読み込む
+    data, _ = load_json()  # new_file_created フラグは無視
+    current_temperature = round(data['temperature'], 1)  # 小数点第一位で四捨五入
+
+    # メッセージを送信し、ephemeral=True を指定して本人にのみ表示
+    await interaction.response.send_message(f'現在のサウナ室温度は 🌡️ {current_temperature}℃ です。', ephemeral=True)
+
+def setup(bot):
+    @bot.tree.command(name='show_temperature', description='現在のサウナ室温度を表示します')
+    async def show_temperature(interaction: discord.Interaction):
+        await send_current_temperature(interaction)

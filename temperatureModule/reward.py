@@ -4,6 +4,8 @@ import requests
 import random
 import config
 
+IGNORED_CATEGORY_ID = config.IGNORED_CATEGORY_ID  # 温度上昇を無視するカテゴリのID
+
 # YouTube Data APIのエンドポイントとAPIキー
 YOUTUBE_SEARCH_API_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_KEY = config.YOUTUBE_KEY  # APIキーを設定
@@ -46,6 +48,10 @@ async def get_most_reacted_post(guild: discord.Guild, date):
     end_of_day = datetime.datetime.combine(date, datetime.time.max)
 
     for channel in guild.text_channels:
+        # 無視するカテゴリIDのチェックを追加
+        if channel.category_id == IGNORED_CATEGORY_ID:
+            continue  # このチャンネルは無視するカテゴリーに属しているのでスキップ
+
         try:
             async for message in channel.history(limit=100, after=start_of_day, before=end_of_day):
                 total_reactions = sum(reaction.count for reaction in message.reactions)
@@ -56,6 +62,7 @@ async def get_most_reacted_post(guild: discord.Guild, date):
             print(f"チャンネル {channel.name} の履歴取得中にエラー: {e}")
 
     return most_reacted_post
+
 
 async def send_90_degree_reward(channel_id: int, guild: discord.Guild, date):
     channel = guild.get_channel(channel_id)
