@@ -8,6 +8,7 @@ import game.minesweeper as minesweeper
 
 from chatgptModule.chatgpt import set_openai_key, handle_chatgpt_response
 
+import temperatureModule.temperature as temperature
 from temperatureModule.temperature import process_message
 
 YOUR_BOT_TOKEN = config.BOT_TOKEN
@@ -37,6 +38,8 @@ othello.setup(bot)
 minesweeper.setup(bot)
 # ブラックジャック機能のセットアップ
 bj.setup(bot)
+# 現在の温度表示機能のセットアップ
+temperature.setup(bot)
 
 @bot.event
 async def on_message(message):

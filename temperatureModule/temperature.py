@@ -1,5 +1,6 @@
 import json
 import datetime
+import discord
 from discord import Message
 from filelock import FileLock, Timeout
 import config
@@ -105,3 +106,17 @@ def load_json():
 def save_json(data):
     with open(JSON_FILE_PATH, 'w') as file:
         json.dump(data, file, indent=4)
+
+#温度表示コマンド
+async def send_current_temperature(channel):
+    # JSONファイルから現在の温度を読み込む
+    data, _ = load_json()  # new_file_created フラグは無視
+    current_temperature = round(data['temperature'], 1)  # 小数点第一位で四捨五入
+
+    # メッセージを送信
+    await channel.send(f'現在のサウナ室温度は 🌡️ {current_temperature}℃ です。')
+
+def setup(bot):
+    @bot.tree.command(name='show_temperature', description='現在のサウナ室温度を表示します')
+    async def show_temperature(interaction: discord.Interaction):
+        await send_current_temperature(interaction)
