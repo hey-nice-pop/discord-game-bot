@@ -108,13 +108,13 @@ def save_json(data):
         json.dump(data, file, indent=4)
 
 #温度表示コマンド
-async def send_current_temperature(channel):
+async def send_current_temperature(interaction: discord.Interaction):
     # JSONファイルから現在の温度を読み込む
     data, _ = load_json()  # new_file_created フラグは無視
     current_temperature = round(data['temperature'], 1)  # 小数点第一位で四捨五入
 
-    # メッセージを送信
-    await channel.send(f'現在のサウナ室温度は 🌡️ {current_temperature}℃ です。')
+    # メッセージを送信し、ephemeral=True を指定して本人にのみ表示
+    await interaction.response.send_message(f'現在のサウナ室温度は 🌡️ {current_temperature}℃ です。', ephemeral=True)
 
 def setup(bot):
     @bot.tree.command(name='show_temperature', description='現在のサウナ室温度を表示します')
