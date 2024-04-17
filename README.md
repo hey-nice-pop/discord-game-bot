@@ -1,4 +1,4 @@
-# Discord Bot (stone)
+# Discord Bot
 サウナから着想を得たDiscord bot
 ## 機能
 ### スラッシュコマンド( / )に対応したゲーム
